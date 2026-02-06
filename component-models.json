@@ -190,6 +190,47 @@
     ]
   },
   {
+    "id": "global-alert",
+    "fields": [
+      {
+        "component": "richtext",
+        "name": "text",
+        "label": "Alert Text",
+        "valueType": "string",
+        "description": "Main alert message"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "caption",
+        "label": "Caption",
+        "description": "Optional caption text"
+      },
+      {
+        "component": "boolean",
+        "name": "dismissible",
+        "label": "Dismissible",
+        "value": "false",
+        "description": "Allow users to dismiss this alert"
+      },
+      {
+        "component": "select",
+        "name": "type",
+        "label": "Alert Type",
+        "options": [
+          {
+            "name": "Information",
+            "value": "information"
+          },
+          {
+            "name": "Alert/Warning",
+            "value": "alert"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "id": "hero",
     "fields": [
       {
@@ -212,6 +253,42 @@
         "value": "",
         "label": "Text",
         "valueType": "string"
+      }
+    ]
+  },
+  {
+    "id": "tabs",
+    "fields": [
+      {
+        "component": "text",
+        "name": "tabGroup",
+        "label": "Tab Group",
+        "description": "Unique identifier for this tab group"
+      }
+    ]
+  },
+  {
+    "id": "tab",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "name",
+        "label": "Tab Name",
+        "description": "Name of the tab"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "tabId",
+        "label": "Tab ID",
+        "description": "Optional unique ID for the tab"
+      },
+      {
+        "component": "boolean",
+        "name": "backToTab",
+        "label": "Show Back to Tabs Link",
+        "value": "false"
       }
     ]
   }

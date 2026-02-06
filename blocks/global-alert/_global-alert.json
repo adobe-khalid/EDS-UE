@@ -1,0 +1,63 @@
+{
+  "definitions": [
+    {
+      "title": "Global Alert",
+      "id": "global-alert",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Global Alert",
+              "model": "global-alert"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "global-alert",
+      "fields": [
+        {
+          "component": "richtext",
+          "name": "text",
+          "label": "Alert Text",
+          "valueType": "string",
+          "description": "Main alert message"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "caption",
+          "label": "Caption",
+          "description": "Optional caption text"
+        },
+        {
+          "component": "boolean",
+          "name": "dismissible",
+          "label": "Dismissible",
+          "value": "false",
+          "description": "Allow users to dismiss this alert"
+        },
+        {
+          "component": "select",
+          "name": "type",
+          "label": "Alert Type",
+          "options": [
+            {
+              "name": "Information",
+              "value": "information"
+            },
+            {
+              "name": "Alert/Warning",
+              "value": "alert"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "filters": []
+}

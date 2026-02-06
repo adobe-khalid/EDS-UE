@@ -1,0 +1,236 @@
+:root {
+  --accordion-content-spacing-top: 16px;
+  --accordion-content-spacing-bottom: 32px;
+}
+
+.section.tabs-container {
+  margin-bottom: 0;
+}
+
+.section.tabs-container:has(.tabs-acc-mode) {
+  padding-top: 0;
+}
+
+.tabs.block {
+  display: flex;
+  flex-direction: column;
+  contain: layout style;
+  min-height: 0;
+}
+
+.tabs-section > *:nth-last-child(3) > *:last-child {
+  margin: 0;
+}
+
+.tabs .tabs-list {
+  display: none;
+}
+
+.tabs.tabs-acc-mode .tabs-list {
+  display: none;
+}
+
+.section.tabs-item {
+  padding-top: 0;
+  position: relative;
+}
+
+.tabs-mode.tabs-item.hidden {
+  display: none;
+}
+
+.tabs-item.tabs-acc-mode {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.tabs-item.tabs-acc-mode:not(.tabs-item-last) {
+  margin-bottom: 0;
+}
+
+.tabs-item.hidden > *:not(.tabs-acc-header-wrapper) {
+  display: none;
+}
+
+.tabs-acc-header-wrapper {
+  display: block;
+  margin: 0;
+  max-width: 1200px;
+  width: 100%;
+}
+
+.tabs-acc-header-wrapper:hover {
+  background: var(--light-color);
+}
+
+.tabs-mode .tabs-acc-header-wrapper {
+  display: none;
+}
+
+.tabs-acc-mode:not(.hidden) .tabs-acc-header-wrapper:has(+ div) {
+  margin-bottom: var(--accordion-content-spacing-top);
+}
+
+.tabs-acc-mode > div:last-child {
+  margin-bottom: var(--accordion-content-spacing-bottom);
+}
+
+.tabs-acc-header-wrapper .tabs-acc-header {
+  font-weight: 700;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  background: transparent;
+  border-top: 1px solid #ddd;
+  text-align: left;
+  cursor: pointer;
+  color: var(--text-color);
+  padding: 16px 8px;
+  gap: 12px;
+  transition: background-color 0.2s ease;
+  margin: 0;
+  text-decoration: none;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+.tabs-acc-header-wrapper .tabs-acc-header::after {
+  width: 24px;
+  height: 24px;
+  content: ' ';
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>');
+  background-repeat: no-repeat;
+  background-size: contain;
+  flex-shrink: 0;
+}
+
+.tabs-acc-header[aria-expanded='true']::after {
+  transform: rotate(180deg);
+}
+
+.tabs-acc-header:focus-visible {
+  outline-offset: 0;
+  outline: 2px solid var(--link-color);
+}
+
+.tabs.tabs-mode .tabs-list .tabs-button {
+  box-sizing: border-box;
+  height: 100%;
+  padding: 12px 16px;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  margin: 0;
+  position: relative;
+  cursor: pointer;
+  font-weight: 400;
+  color: #666;
+  text-decoration: none;
+  display: inline-block;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.tabs.tabs-mode .tabs-list .tabs-button::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  background: #ddd;
+}
+
+.tabs.tabs-mode .tabs-list .tabs-button:hover {
+  background: var(--light-color);
+  color: var(--text-color);
+}
+
+.tabs.tabs-mode .tabs-list .tabs-button:hover::after {
+  background: #999;
+}
+
+.tabs.tabs-mode .tabs-list .tabs-button.active {
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+.tabs.tabs-mode .tabs-list .tabs-button.active::after {
+  background: var(--link-color);
+}
+
+.tabs.tabs-mode .tabs-list .tabs-button.active:hover::after {
+  background: var(--link-color);
+}
+
+.tabs.tabs-mode .tabs-list .tabs-button:focus-visible {
+  outline-offset: -2px;
+}
+
+.tabs-item .anchor-wrapper {
+  display: none;
+}
+
+.tabs-item .anchor-wrapper .back-to-top-link {
+  margin-left: auto;
+  align-self: flex-end;
+}
+
+.tabs-item.show-back-to-tabs .anchor-wrapper {
+  display: flex;
+}
+
+.tabs-item.show-back-to-tabs.tabs-acc-mode .anchor-wrapper {
+  display: none;
+}
+
+.tabs-item-backtotabs {
+  display: flex;
+  padding: 8px 0;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: var(--link-color);
+  margin: 0;
+}
+
+.tabs-item-backtotabs:hover {
+  text-decoration: underline;
+}
+
+.tabs-item-backtotabs::before {
+  content: '↑';
+  display: inline-block;
+  text-decoration: none;
+  width: 16px;
+  height: 16px;
+}
+
+.tabs.tabs-mode .tabs-list {
+  display: flex;
+  white-space: nowrap;
+  scrollbar-width: none;
+  list-style: none;
+  max-width: 100%;
+  gap: 8px;
+  overflow: auto hidden;
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.tabs-item.tabs-mode:not(.hidden) {
+  padding-top: 24px;
+  padding-bottom: 24px;
+}
+
+.tabs.block.tabs-mode.tabs-measure-clone {
+  position: absolute;
+  visibility: hidden;
+  display: flex;
+  top: -9999px;
+  left: -9999px;
+  width: auto;
+  height: auto;
+  pointer-events: none;
+}
