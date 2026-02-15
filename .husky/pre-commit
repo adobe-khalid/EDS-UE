@@ -1,1 +1,13 @@
+#!/usr/bin/env sh
+
+# Add common Node.js installation paths for macOS
+export PATH="/usr/local/bin:/opt/homebrew/bin:$PATH"
+
+# If using nvm, try to load it
+if [ -s "$HOME/.nvm/nvm.sh" ]; then
+  export NVM_DIR="$HOME/.nvm"
+  . "$NVM_DIR/nvm.sh"
+fi
+
+# Run the pre-commit script
 node .husky/pre-commit.mjs

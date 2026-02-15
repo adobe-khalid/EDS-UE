@@ -11,6 +11,10 @@ import {
 import { decorateRichtext } from './editor-support-rte.js';
 import { decorateMain } from './scripts.js';
 
+// set aem content root
+window.hlx.aemRoot = '/content/khalid-EDS';
+window.hlx.runmode = 'author';
+
 async function applyChanges(event) {
   // redecorate default content and blocks on patches (in the properties rail)
   const { detail } = event;

@@ -151,7 +151,8 @@
                 "resourceType": "core/franklin/components/block/v1/block",
                 "template": {
                   "name": "Global Alert",
-                  "model": "global-alert"
+                  "model": "global-alert",
+                  "classes": "global-alert-information"
                 }
               }
             }
@@ -173,30 +174,16 @@
           }
         },
         {
-          "title": "Tabs",
-          "id": "tabs",
+          "title": "Tab Section",
+          "id": "tab-section",
           "plugins": {
             "xwalk": {
               "page": {
-                "resourceType": "core/franklin/components/block/v1/block",
+                "resourceType": "core/franklin/components/section/v1/section",
                 "template": {
-                  "name": "Tabs",
-                  "model": "tabs"
-                }
-              }
-            }
-          }
-        },
-        {
-          "title": "Tab",
-          "id": "tab",
-          "plugins": {
-            "xwalk": {
-              "page": {
-                "resourceType": "core/franklin/components/block/v1/block/item",
-                "template": {
-                  "name": "Tab",
-                  "model": "tab"
+                  "name": "Tab Section",
+                  "model": "tab-section",
+                  "filter": "tab-section"
                 }
               }
             }

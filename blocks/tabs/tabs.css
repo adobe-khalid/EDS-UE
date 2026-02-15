@@ -1,10 +1,10 @@
-:root {
-  --accordion-content-spacing-top: 16px;
-  --accordion-content-spacing-bottom: 32px;
+.tabs-wrapper {
+  margin: 0 auto;
 }
 
 .section.tabs-container {
-  margin-bottom: 0;
+  display: none;
+  padding-bottom: 0;
 }
 
 .section.tabs-container:has(.tabs-acc-mode) {
@@ -18,25 +18,29 @@
   min-height: 0;
 }
 
+/* remove margin from last block elements of tabs-section */
 .tabs-section > *:nth-last-child(3) > *:last-child {
   margin: 0;
 }
 
+/* Hide tabs list by default */
 .tabs .tabs-list {
   display: none;
 }
 
+/* Accordion mode - hide tabs list */
 .tabs.tabs-acc-mode .tabs-list {
   display: none;
 }
 
 .section.tabs-item {
   padding-top: 0;
-  position: relative;
+  margin: 0 auto;
 }
 
-.tabs-mode.tabs-item.hidden {
-  display: none;
+.tabs-item.hidden {
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 .tabs-item.tabs-acc-mode {
@@ -44,8 +48,36 @@
   padding-bottom: 0;
 }
 
-.tabs-item.tabs-acc-mode:not(.tabs-item-last) {
-  margin-bottom: 0;
+.tabs-item.tabs-acc-mode > *:not(.tabs-acc-header-wrapper) {
+  padding-left: 4px;
+  padding-right: 4px;
+  box-sizing: border-box;
+}
+
+.tabs-item-first.tabs-acc-mode {
+  padding-top: clamp(24px, 5vw, 48px);
+}
+
+.tabs-item-last.tabs-acc-mode {
+  padding-bottom: clamp(24px, 5vw, 48px);
+}
+
+.tabs-item.tabs-acc-mode::before {
+  display: block;
+  content: '';
+  height: 1px;
+  width: 100%;
+  border-top: 1px solid #e5e5e5;
+  max-width: 1200px;
+}
+
+.tabs-item-last.tabs-acc-mode::after {
+  display: block;
+  content: '';
+  height: 1px;
+  width: 100%;
+  border-bottom: 1px solid #e5e5e5;
+  max-width: 1200px;
 }
 
 .tabs-item.hidden > *:not(.tabs-acc-header-wrapper) {
@@ -60,38 +92,40 @@
 }
 
 .tabs-acc-header-wrapper:hover {
-  background: var(--light-color);
+  background: #f5f5f5;
 }
 
 .tabs-mode .tabs-acc-header-wrapper {
   display: none;
 }
 
-.tabs-acc-mode:not(.hidden) .tabs-acc-header-wrapper:has(+ div) {
-  margin-bottom: var(--accordion-content-spacing-top);
-}
-
-.tabs-acc-mode > div:last-child {
-  margin-bottom: var(--accordion-content-spacing-bottom);
+.tabs-item:not(.hidden) .tabs-acc-header-wrapper {
+  margin-bottom: 8px;
 }
 
 .tabs-acc-header-wrapper .tabs-acc-header {
-  font-weight: 700;
+  font-weight: 500;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   width: 100%;
   background: transparent;
-  border-top: 1px solid #ddd;
+  border: none;
   text-align: left;
   cursor: pointer;
-  color: var(--text-color);
-  padding: 16px 8px;
+  color: #131313;
+  padding: 16px 4px;
   gap: 12px;
   transition: background-color 0.2s ease;
-  margin: 0;
+  margin: 2px 0;
   text-decoration: none;
+  scroll-margin-top: 20px;
+  border-radius: 4px;
+
+  /* Add touch-action for better swipe/pan gesture support */
   touch-action: manipulation;
+
+  /* Improve user select behavior on touch devices */
   user-select: none;
 }
 
@@ -99,25 +133,27 @@
   width: 24px;
   height: 24px;
   content: ' ';
-  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>');
-  background-repeat: no-repeat;
-  background-size: contain;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z'/%3E%3C/svg%3E");
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  background-color: currentcolor;
   flex-shrink: 0;
 }
 
 .tabs-acc-header[aria-expanded='true']::after {
-  transform: rotate(180deg);
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z'/%3E%3C/svg%3E") no-repeat center / contain;
 }
 
 .tabs-acc-header:focus-visible {
   outline-offset: 0;
-  outline: 2px solid var(--link-color);
+  outline: 2px solid #3b63fb;
 }
 
+/* Tabs mode button styles - targeting both button element and tabs-button class */
 .tabs.tabs-mode .tabs-list .tabs-button {
   box-sizing: border-box;
   height: 100%;
-  padding: 12px 16px;
+  padding: 12px 20px;
   background: transparent;
   border: none;
   border-radius: 4px;
@@ -125,7 +161,7 @@
   position: relative;
   cursor: pointer;
   font-weight: 400;
-  color: #666;
+  color: #505050;
   text-decoration: none;
   display: inline-block;
   white-space: nowrap;
@@ -138,50 +174,65 @@
   left: 0;
   bottom: 0;
   width: 100%;
-  height: 2px;
-  background: #ddd;
+  height: 4px;
+  border-radius: 4px 4px 0 0;
+  background: #d4d4d4;
 }
 
 .tabs.tabs-mode .tabs-list .tabs-button:hover {
-  background: var(--light-color);
-  color: var(--text-color);
+  background: #f5f5f5;
+  color: #131313;
 }
 
 .tabs.tabs-mode .tabs-list .tabs-button:hover::after {
-  background: #999;
+  background: rgb(0 0 0 / 45%);
 }
 
 .tabs.tabs-mode .tabs-list .tabs-button.active {
-  font-weight: 700;
-  color: var(--text-color);
+  font-weight: 500;
+  color: #131313;
 }
 
 .tabs.tabs-mode .tabs-list .tabs-button.active::after {
-  background: var(--link-color);
+  background: #3b63fb;
 }
 
 .tabs.tabs-mode .tabs-list .tabs-button.active:hover::after {
-  background: var(--link-color);
+  background: #3b63fb;
 }
 
 .tabs.tabs-mode .tabs-list .tabs-button:focus-visible {
-  outline-offset: -2px;
+  outline-offset: 0;
 }
 
-.tabs-item .anchor-wrapper {
-  display: none;
-}
-
-.tabs-item .anchor-wrapper .back-to-top-link {
-  margin-left: auto;
+.tabs-divider {
+  flex: 1;
+  border-bottom: 1px solid #e5e5e5;
+  height: 100%;
   align-self: flex-end;
 }
 
-.tabs-item.show-back-to-tabs .anchor-wrapper {
+.tabs-item .tabs-divider {
+  margin: clamp(16px, 4vw, 32px) 0 0;
+  align-self: center;
+}
+
+.tabs-acc-mode .tabs-divider {
+  border-bottom: 0;
+}
+
+.tabs-item-anchor-wrapper {
+  display: none;
+  gap: 8px;
+  justify-content: end;
+  margin: clamp(16px, 4vw, 32px) 0 0;
+}
+
+.show-back-to-tabs .tabs-item-anchor-wrapper {
   display: flex;
 }
 
-.tabs-item.show-back-to-tabs.tabs-acc-mode .anchor-wrapper {
+.tabs-acc-mode .tabs-item-anchor-wrapper {
   display: none;
 }
 
@@ -191,7 +242,7 @@
   align-items: center;
   gap: 8px;
   text-decoration: none;
-  color: var(--link-color);
+  color: #3b63fb;
   margin: 0;
 }
 
@@ -200,30 +251,68 @@
 }
 
 .tabs-item-backtotabs::before {
-  content: '↑';
+  content: '';
   display: inline-block;
   text-decoration: none;
   width: 16px;
   height: 16px;
+  background-color: currentcolor;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z'/%3E%3C/svg%3E") no-repeat center / contain;
 }
 
-.tabs.tabs-mode .tabs-list {
+.tabs-item.hidden .tabs-item-anchor-wrapper {
+  display: none;
+}
+
+/* Start - Author Edit Mode */
+.author-edit.section.tabs-item.hidden > * {
+  display: block;
+}
+
+.author-edit.section.tabs-item.hidden > .tabs-item-anchor-wrapper {
   display: flex;
-  white-space: nowrap;
-  scrollbar-width: none;
-  list-style: none;
-  max-width: 100%;
-  gap: 8px;
-  overflow: auto hidden;
-  transform: translateZ(0);
-  will-change: transform;
 }
 
-.tabs-item.tabs-mode:not(.hidden) {
-  padding-top: 24px;
-  padding-bottom: 24px;
+.author-edit.tabs-item.tabs-mode .tabs-acc-header-wrapper {
+  display: none;
 }
 
+.author-edit.tabs-item.tabs-mode {
+  padding-top: clamp(16px, 4vw, 32px);
+}
+
+/* End - Author Edit Mode */
+
+/* Desktop and larger screens */
+@media (width >= 36rem) {
+  /* Show tabs container on larger screens */
+  .section.tabs-container {
+    display: block;
+  }
+
+  /* Tabs mode - show tabs list with styling */
+  .tabs.tabs-mode .tabs-list {
+    display: flex;
+    white-space: nowrap;
+    scrollbar-width: none;
+    list-style: none;
+    max-width: 100%;
+    gap: 8px;
+    padding: 4px;
+    overflow: auto hidden;
+
+    /* Optimize for performance and prevent layout shifts */
+    transform: translateZ(0);
+    will-change: transform;
+  }
+
+  /* Accordion mode - hide tabs list */
+  .tabs.tabs-acc-mode .tabs-list {
+    display: none;
+  }
+}
+
+/* This CSS is a workaround for measuring hidden elements */
 .tabs.block.tabs-mode.tabs-measure-clone {
   position: absolute;
   visibility: hidden;

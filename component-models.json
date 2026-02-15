@@ -193,40 +193,40 @@
     "id": "global-alert",
     "fields": [
       {
-        "component": "richtext",
-        "name": "text",
-        "label": "Alert Text",
-        "valueType": "string",
-        "description": "Main alert message"
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "caption",
-        "label": "Caption",
-        "description": "Optional caption text"
-      },
-      {
-        "component": "boolean",
-        "name": "dismissible",
-        "label": "Dismissible",
-        "value": "false",
-        "description": "Allow users to dismiss this alert"
-      },
-      {
         "component": "select",
-        "name": "type",
+        "name": "classes",
+        "value": "global-alert-information",
         "label": "Alert Type",
         "options": [
           {
             "name": "Information",
-            "value": "information"
+            "value": "global-alert-information"
           },
           {
-            "name": "Alert/Warning",
-            "value": "alert"
+            "name": "Alert",
+            "value": "global-alert-alert"
           }
         ]
+      },
+      {
+        "component": "richtext",
+        "name": "text",
+        "label": "Rich Text Editor",
+        "required": true,
+        "value": "",
+        "valueType": "string"
+      },
+      {
+        "component": "text",
+        "name": "alertCaption",
+        "label": "Caption",
+        "required": false
+      },
+      {
+        "component": "boolean",
+        "label": "Dismissible Alerts",
+        "name": "isAlertDismissible",
+        "valueType": "boolean"
       }
     ]
   },
@@ -257,38 +257,37 @@
     ]
   },
   {
-    "id": "tabs",
+    "id": "tab-section",
+    "filter": "tab-section",
+    "contentTreeField": "tab-name",
     "fields": [
       {
         "component": "text",
-        "name": "tabGroup",
-        "label": "Tab Group",
-        "description": "Unique identifier for this tab group"
-      }
-    ]
-  },
-  {
-    "id": "tab",
-    "fields": [
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "name",
+        "name": "tab-name",
         "label": "Tab Name",
-        "description": "Name of the tab"
+        "description": "Enter the name of the tab",
+        "valueType": "string",
+        "required": true
       },
       {
         "component": "text",
+        "name": "tab-id",
+        "label": "TAB ID URL",
+        "description": "Enter the unique tab ID which needs to be displayed in the URL",
         "valueType": "string",
-        "name": "tabId",
-        "label": "Tab ID",
-        "description": "Optional unique ID for the tab"
+        "required": true
       },
       {
-        "component": "boolean",
-        "name": "backToTab",
-        "label": "Show Back to Tabs Link",
-        "value": "false"
+        "component": "checkbox-group",
+        "name": "back-to-tab",
+        "label": "",
+        "valueType": "string",
+        "options": [
+          {
+            "name": "Back to Tabs",
+            "value": "show-back-to-tabs"
+          }
+        ]
       }
     ]
   }

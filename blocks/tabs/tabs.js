@@ -5,10 +5,19 @@ import {
   isTouchDevice,
 } from '../../scripts/utils/common-utils.js';
 import subscribeToResizeListener from '../../scripts/utils/resize-listener.js';
-import { fetchLanguagePlaceholders } from '../../scripts/utils/script-utils.js';
-import { createElementWithClasses } from '../../scripts/utils/dom.js';
+import { fetchLanguagePlaceholders } from '../../scripts/scripts.js';
+import { isMobileScreen } from '../../scripts/utils/dom.js';
 
 // Configuration and constants
+const SELECTORS = {
+  tabsList: '.tabs-list',
+  tabButton: 'button[role="tab"]',
+  accordionHeader: '.tabs-acc-header',
+  tabContent: '.tabs-section',
+  backToTabLink: '.tabs-item-backtotabs',
+  tabGroup: 'data-tab-group',
+};
+
 const CLASSES = {
   active: 'active',
   hidden: 'hidden',
@@ -24,19 +33,12 @@ const CLASSES = {
   tabsAccHeaderWrapper: 'tabs-acc-header-wrapper',
   tabsAccHeader: 'tabs-acc-header',
   tabsItemAnchorWrapper: 'tabs-item-anchor-wrapper',
-  tabsItemBacktotabs: 'back-to-top-link',
+  tabsItemBacktotabs: 'tabs-item-backtotabs',
   authorEdit: 'author-edit',
+  tabsDivider: 'tabs-divider',
 };
 
-const SELECTORS = {
-  tabsList: '.tabs-list',
-  tabButton: 'button[role="tab"]',
-  accordionHeader: `.${CLASSES.tabsAccHeader}`,
-  tabContent: '.tabs-section',
-  backToTabLink: `.${CLASSES.tabsItemBacktotabs}`,
-  tabGroup: 'data-tab-group',
-  tabContainer: '.tabs-container',
-};
+// const componentName = 'tabs';
 
 function attachTestIdToElements(block, tabGroupName) {
   const mainEle = document.querySelector('main');
@@ -55,11 +57,26 @@ function attachTestIdToElements(block, tabGroupName) {
     },
   ];
 
-  elementsToAttach.forEach(({ parentEl, selector, elementName }) => {
+  elementsToAttach.forEach(({
+    parentEl, selector, elementName,
+  }) => {
     attachTestId({
       block, parentEl, selector, elementName,
     });
   });
+}
+
+/**
+ * Adds a visually hidden live region for announcing accordion state changes to screen readers.
+ */
+let tabsLiveRegion = document.getElementById('tabs-aria-live');
+if (!tabsLiveRegion) {
+  tabsLiveRegion = document.createElement('div');
+  tabsLiveRegion.id = 'tabs-aria-live';
+  tabsLiveRegion.setAttribute('aria-live', 'polite');
+  tabsLiveRegion.setAttribute('role', 'status');
+  tabsLiveRegion.classList.add('visually-hidden');
+  document.body.appendChild(tabsLiveRegion);
 }
 
 /**
@@ -69,8 +86,8 @@ function attachTestIdToElements(block, tabGroupName) {
  * @param {Object} tab - The tab data object.
  * @param {string} state - The new state ('expanded' or 'collapsed').
  */
-function announceAccordionStateChange(headerEl, tab, state, placeholder) {
-  if (!headerEl) return;
+function announceAccordionStateChange(headerEl, liveRegionEl, tab, state, placeholder) {
+  if (!headerEl || !liveRegionEl) return;
 
   const tag = headerEl.parentElement?.tagName?.toLowerCase() || '';
   const headingLevel = /^h[1-6]$/.test(tag) ? `heading level ${tag[1]}` : '';
@@ -83,20 +100,9 @@ function announceAccordionStateChange(headerEl, tab, state, placeholder) {
     instruction = placeholder?.voDoubleTapToCollapse || 'Double tap to collapse.';
   }
 
-  const announcement = customLabel
+  liveRegionEl.textContent = customLabel
     ? customLabel.replace('{state}', state)
     : [tab.name, role, headingLevel, state, instruction].filter(Boolean).join(', ');
-  const liveRegionEl = document.createElement('div');
-  liveRegionEl.setAttribute('aria-live', 'polite');
-  liveRegionEl.setAttribute('aria-atomic', 'true');
-  liveRegionEl.classList.add('visually-hidden');
-
-  document.body.appendChild(liveRegionEl);
-  liveRegionEl.textContent = announcement;
-
-  setTimeout(() => {
-    liveRegionEl.remove();
-  }, 1000);
 }
 
 // Utility functions
@@ -127,13 +133,18 @@ const scrollToTarget = (tabs, $block, targetTabIndex, delay = 100) => {
     const accordionMode = isAccordionMode($block);
     const activeTab = tabs[targetTabIndex];
     const accordionButton = document.getElementById(`${activeTab?.id}-accordion`);
-    const tabButton = activeTab.element;
     const tabContent = activeTab?.content || document.getElementById(`${activeTab?.id}-tabpanel`);
 
     if (accordionMode) {
-      setScrollAndFocus(accordionButton || tabContent || $block, true, true);
+      if (accordionButton) {
+        setScrollAndFocus(accordionButton, true, true);
+      } else if (tabContent) {
+        setScrollAndFocus(tabContent, true, true);
+      } else {
+        setScrollAndFocus($block, true, true);
+      }
     } else {
-      setScrollAndFocus(tabButton || tabContent || $block, true, true);
+      setScrollAndFocus($block, true, true);
     }
   }, delay);
 };
@@ -155,12 +166,6 @@ const applyModeClasses = ($block, tabSections, useAccordionMode) => {
   tabSections.forEach((section) => {
     section.classList.remove(modeClassToRemove);
     section.classList.add(modeClassToAdd);
-
-    // Update accordion header aria-hidden based on mode
-    const accordionHeader = section.querySelector(`.${CLASSES.tabsAccHeader}`);
-    if (accordionHeader) {
-      accordionHeader.setAttribute('aria-hidden', useAccordionMode ? 'false' : 'true');
-    }
 
     // Update role and tabindex based on mode
     if (useAccordionMode) {
@@ -315,7 +320,13 @@ function handleAccordionClick(tabs, $block, tabIndex, placeholder) {
     }
     // Announce state change for screen readers (collapsed)
     // Pass placeholder from $block
-    announceAccordionStateChange(accordionHeader, activeTab, 'collapsed', placeholder);
+    announceAccordionStateChange(
+      accordionHeader,
+      tabsLiveRegion,
+      activeTab,
+      'collapsed',
+      placeholder,
+    );
     const tabButtons = $block.querySelectorAll(`${SELECTORS.tabsList} button`);
     tabButtons.forEach((btn) => {
       btn.classList.remove(CLASSES.active);
@@ -330,16 +341,24 @@ function handleAccordionClick(tabs, $block, tabIndex, placeholder) {
   // For all other cases (open accordion or tab mode), use shared activation
   // Only trigger analytics if tab was not already active (state change occurred)
   activateTab(tabs, $block, tabIndex, {
+    triggerAnalytics: !isCurrentlyActive,
     scrollToTop: false,
   });
 
   // Announce state change for screen readers (expanded)
-  announceAccordionStateChange(accordionHeader, activeTab, 'expanded', placeholder);
+  announceAccordionStateChange(
+    accordionHeader,
+    tabsLiveRegion,
+    activeTab,
+    'expanded',
+    placeholder,
+  );
   if (accordionHeader) setScrollAndFocus(accordionHeader, true, false);
 }
 
 function handleTabClick(tabs, $block, tabIndex) {
   activateTab(tabs, $block, tabIndex, {
+    triggerAnalytics: true,
     scrollToTop: true,
   });
 }
@@ -412,6 +431,7 @@ function createAccordionHeader(tab) {
     'aria-expanded': tab.index === 0 ? 'true' : 'false',
     'aria-controls': `${tab.id}-tabpanel`,
     'data-tab-index': tab.index,
+    'aria-hidden': 'false',
     tabindex: '0',
   });
 
@@ -421,37 +441,19 @@ function createAccordionHeader(tab) {
   return wrapper;
 }
 
-function buildBackToTabLink(tab, tabContent, placeholders) {
-  if (!tabContent) return;
-
+function createBackToTabLink(tab, placeholder) {
   // Always create back to tabs link, regardless of preset configuration
-  const backToTab = document.createElement('a');
-  backToTab.href = `#${tab.id}`;
-  backToTab.classList.add(CLASSES.tabsItemBacktotabs, 'body-02');
-  backToTab.textContent = placeholders?.backToTabs;
+  const linkWrapper = document.createElement('div');
+  linkWrapper.className = CLASSES.tabsItemAnchorWrapper;
 
-  const anchorWrapper = createElementWithClasses('div', 'anchor-wrapper');
-  anchorWrapper.appendChild(backToTab);
+  const link = document.createElement('a');
+  link.href = `#${tab.id}`;
+  link.className = `${CLASSES.tabsItemBacktotabs} body-02`;
+  link.textContent = placeholder?.backToTabs || 'Back to tabs';
 
-  let container = tabContent;
-  if (tabContent.lastElementChild && tabContent.lastElementChild.tagName === 'DIV') {
-    container = tabContent.lastElementChild;
-  }
-  container.appendChild(anchorWrapper);
-}
+  linkWrapper.appendChild(link);
 
-function getAriaLabel($block) {
-  // Find the first heading above the tab container
-  const tabContainer = $block.closest(SELECTORS.tabContainer);
-  const previousSection = tabContainer?.previousElementSibling;
-
-  if (previousSection) {
-    const headings = previousSection.querySelectorAll('h1, h2, h3, h4, h5, h6');
-    const lastHeading = headings[headings.length - 1];
-    return lastHeading?.textContent?.trim() || '';
-  }
-
-  return '';
+  return linkWrapper;
 }
 
 // Main tab creation function
@@ -464,9 +466,14 @@ export function createTabs($block, tabSections, placeholder) {
   // Create tab data structure
   const tabs = createTabData($tabsContainer);
 
+  // Add divider for styling
+  const divider = document.createElement('div');
+  divider.className = CLASSES.tabsDivider;
+  $tabsContainer.appendChild(divider);
+
   // Setup container attributes
   setAttributes($tabsContainer, {
-    'aria-label': getAriaLabel($block),
+    'aria-label': 'Tab description',
     role: 'tablist',
   });
 
@@ -502,7 +509,13 @@ export function createTabs($block, tabSections, placeholder) {
       $tabContent.insertBefore(accordionHeader, $tabContent.firstChild);
 
       // Add back to tabs link (always present now)
-      buildBackToTabLink(tab, $tabContent, placeholder);
+      const backLink = createBackToTabLink(tab, placeholder);
+      $tabContent.appendChild(backLink);
+
+      // Add border divider
+      const borderDivider = document.createElement('div');
+      borderDivider.className = CLASSES.tabsDivider;
+      $tabContent.appendChild(borderDivider);
     }
   });
 
@@ -559,12 +572,18 @@ export function checkTabsOverflow($block, tabSections) {
     //   return;
     // }
 
-    // Check for overflow on larger screens
-    const contentWidth = getTabsWidths($block);
-    const availableWidth = $block.clientWidth;
-    const isOverflowing = contentWidth > availableWidth;
-    // Apply correct classes based on overflow state
-    applyMode(isOverflowing);
+    if (isMobileScreen()) {
+      // Force accordion mode on mobile
+      applyMode(true);
+    } else {
+      // Check for overflow on larger screens
+      const contentWidth = getTabsWidths($block);
+      const availableWidth = $block.clientWidth;
+      const isOverflowing = contentWidth > availableWidth;
+
+      // Apply correct classes based on overflow state
+      applyMode(isOverflowing);
+    }
   });
 }
 
@@ -606,9 +625,9 @@ function setupGlobalLinkHandlers() {
   if (globalHandlersInitialized) return;
   globalHandlersInitialized = true;
 
-  // Handle clicks on any anchor links that point to tab IDs, excluding 'Back to tabs' link
+  // Handle clicks on any anchor links that point to tab IDs
   document.addEventListener('click', (event) => {
-    const anchor = event.target.closest(`a[href^="#"]:not(${SELECTORS.backToTabLink})`);
+    const anchor = event.target.closest('a[href^="#"]');
     if (!anchor) return;
 
     const targetId = anchor.getAttribute('href').substring(1);
@@ -725,9 +744,8 @@ function setupTabEvents(tabs, $block, tabGroupName, placeholder) {
           }
           case 'ArrowLeft': {
             ev.preventDefault();
-            const prevIndex = (
-                currentIndex - 1 + accordionHeaders.length
-            ) % accordionHeaders.length;
+            const prevIndex = (currentIndex - 1 + accordionHeaders.length)
+              % accordionHeaders.length;
             navigateToAccordionHeader(accordionHeaders, prevIndex);
             break;
           }
