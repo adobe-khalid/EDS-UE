@@ -1,0 +1,288 @@
+.tabs-fragment-wrapper {
+  margin: 0 auto;
+}
+
+.tabs-fragment.block {
+  display: flex;
+  flex-direction: column;
+  contain: layout style;
+  min-height: 0;
+}
+
+/* Hide tabs list by default */
+.tabs-fragment .tabs-fragment-list {
+  display: none;
+}
+
+/* Accordion mode - hide tabs list */
+.tabs-fragment.tabs-acc-mode .tabs-fragment-list {
+  display: none;
+}
+
+.tabs-fragment-content-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.tabs-fragment-content {
+  padding: 0;
+  margin: 0;
+}
+
+.tabs-fragment-content.hidden {
+  display: none;
+}
+
+.tabs-fragment-content > main {
+  padding: 0;
+  margin: 0;
+}
+
+/* Accordion Header Styles */
+.tabs-fragment-acc-header-wrapper {
+  display: block;
+  margin: 0;
+  max-width: 1200px;
+  width: 100%;
+}
+
+.tabs-fragment-acc-header-wrapper:hover {
+  background: #f5f5f5;
+}
+
+/* Content visibility in tabs mode */
+.tabs-mode .tabs-fragment-content {
+  padding-top: clamp(16px, 4vw, 32px);
+}
+
+.tabs-mode .tabs-fragment-acc-header-wrapper {
+  display: none;
+}
+
+.tabs-fragment-acc-header-wrapper.active + .tabs-fragment-content {
+  margin-bottom: 8px;
+}
+
+.tabs-fragment-acc-header-wrapper .tabs-fragment-acc-header {
+  font-weight: 500;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  background: transparent;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  color: #131313;
+  padding: 16px 4px;
+  gap: 12px;
+  transition: background-color 0.2s ease;
+  margin: 2px 0;
+  text-decoration: none;
+  scroll-margin-top: 20px;
+  border-radius: 4px;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+.tabs-fragment-acc-header-wrapper .tabs-fragment-acc-header::after {
+  width: 24px;
+  height: 24px;
+  content: ' ';
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z'/%3E%3C/svg%3E");
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  background-color: currentcolor;
+  flex-shrink: 0;
+}
+
+.tabs-fragment-acc-header[aria-expanded='true']::after {
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z'/%3E%3C/svg%3E") no-repeat center / contain;
+}
+
+.tabs-fragment-acc-header:focus-visible {
+  outline-offset: 0;
+  outline: 2px solid #3b63fb;
+}
+
+/* Add separator lines for accordion mode */
+.tabs-acc-mode .tabs-fragment-acc-header-wrapper::before {
+  display: block;
+  content: '';
+  height: 1px;
+  width: 100%;
+  border-top: 1px solid #e5e5e5;
+  max-width: 1200px;
+}
+
+.tabs-acc-mode .tabs-fragment-acc-header-wrapper:last-of-type + .tabs-fragment-content::after {
+  display: block;
+  content: '';
+  height: 1px;
+  width: 100%;
+  border-bottom: 1px solid #e5e5e5;
+  max-width: 1200px;
+  margin-top: 8px;
+}
+
+/* Tabs mode button styles */
+.tabs-fragment.tabs-mode .tabs-fragment-list .tabs-fragment-button {
+  box-sizing: border-box;
+  height: 100%;
+  padding: 12px 20px;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  margin: 0;
+  position: relative;
+  cursor: pointer;
+  font-weight: 400;
+  color: #505050;
+  text-decoration: none;
+  display: inline-block;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.tabs-fragment.tabs-mode .tabs-fragment-list .tabs-fragment-button::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 4px;
+  border-radius: 4px 4px 0 0;
+  background: #d4d4d4;
+}
+
+.tabs-fragment.tabs-mode .tabs-fragment-list .tabs-fragment-button:hover {
+  background: #f5f5f5;
+  color: #131313;
+}
+
+.tabs-fragment.tabs-mode .tabs-fragment-list .tabs-fragment-button:hover::after {
+  background: rgb(0 0 0 / 45%);
+}
+
+.tabs-fragment.tabs-mode .tabs-fragment-list .tabs-fragment-button.active {
+  font-weight: 500;
+  color: #131313;
+}
+
+.tabs-fragment.tabs-mode .tabs-fragment-list .tabs-fragment-button.active::after {
+  background: #3b63fb;
+}
+
+.tabs-fragment.tabs-mode .tabs-fragment-list .tabs-fragment-button.active:hover::after {
+  background: #3b63fb;
+}
+
+.tabs-fragment.tabs-mode .tabs-fragment-list .tabs-fragment-button:focus-visible {
+  outline-offset: 0;
+  outline: 2px solid #3b63fb;
+}
+
+.tabs-fragment-divider {
+  flex: 1;
+  border-bottom: 1px solid #e5e5e5;
+  height: 100%;
+  align-self: flex-end;
+}
+
+.tabs-acc-mode .tabs-fragment-divider {
+  border-bottom: 0;
+}
+
+/* Back to tabs link styles */
+.tabs-fragment-back-to-tabs-wrapper {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin: clamp(16px, 4vw, 32px) 0 0;
+}
+
+.tabs-acc-mode .tabs-fragment-back-to-tabs-wrapper {
+  display: none;
+}
+
+.tabs-fragment-back-to-tabs {
+  display: flex;
+  padding: 8px 0;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: #3b63fb;
+  margin: 0;
+}
+
+.tabs-fragment-back-to-tabs:hover {
+  text-decoration: underline;
+}
+
+.tabs-fragment-back-to-tabs::before {
+  content: '';
+  display: inline-block;
+  text-decoration: none;
+  width: 16px;
+  height: 16px;
+  background-color: currentcolor;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z'/%3E%3C/svg%3E") no-repeat center / contain;
+}
+
+/* Author Edit Mode - Show all content */
+.author-edit.tabs-fragment .tabs-fragment-content.hidden {
+  display: block;
+}
+
+.author-edit.tabs-fragment .tabs-fragment-content {
+  padding-top: clamp(16px, 4vw, 32px);
+  padding-bottom: clamp(16px, 4vw, 32px);
+  border-top: 1px dashed #d4d4d4;
+}
+
+.author-edit.tabs-fragment .tabs-fragment-content:first-of-type {
+  border-top: none;
+}
+
+.author-edit.tabs-fragment.tabs-mode .tabs-fragment-acc-header-wrapper {
+  display: none;
+}
+
+/* Desktop and larger screens */
+@media (width >= 36rem) {
+  /* Tabs mode - show tabs list with styling */
+  .tabs-fragment.tabs-mode .tabs-fragment-list {
+    display: flex;
+    white-space: nowrap;
+    scrollbar-width: none;
+    list-style: none;
+    max-width: 100%;
+    gap: 8px;
+    padding: 4px;
+    overflow: auto hidden;
+    transform: translateZ(0);
+    will-change: transform;
+  }
+
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .tabs-fragment.tabs-mode .tabs-fragment-list::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Accordion mode - hide tabs list */
+  .tabs-fragment.tabs-acc-mode .tabs-fragment-list {
+    display: none;
+  }
+}
+
+/* This CSS is a workaround for measuring hidden elements */
+.tabs-fragment.block.tabs-mode.tabs-fragment-measure-clone {
+  position: absolute;
+  visibility: hidden;
+  display: flex;
+  top: -9999px;
+  left: -9999px;
+  width: auto;
+  height: auto;
+  pointer-events: none;
+}

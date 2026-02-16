@@ -1,5 +1,6 @@
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
+import { isAuthorMode } from '../../scripts/utils/common-utils.js';
 
 /**
  * loads and decorates the footer
@@ -8,7 +9,12 @@ import { loadFragment } from '../fragment/fragment.js';
 export default async function decorate(block) {
   // load footer as fragment
   const footerMeta = getMetadata('footer');
-  const footerPath = footerMeta ? new URL(footerMeta, window.location).pathname : '/footer';
+  let footerPath;
+  if (footerMeta) {
+    footerPath = new URL(footerMeta, window.location).pathname;
+  } else {
+    footerPath = isAuthorMode() ? '/content/khalid-EDS/footer' : '/footer';
+  }
   const fragment = await loadFragment(footerPath);
 
   // decorate footer DOM

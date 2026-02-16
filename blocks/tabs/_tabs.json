@@ -1,0 +1,67 @@
+{
+  "definitions": [
+    {
+      "title": "Tab Section",
+      "id": "tab-section",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/section/v1/section",
+            "template": {
+              "name": "Tab Section",
+              "model": "tab-section",
+              "filter": "tab-section"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "tab-section",
+      "filter": "tab-section",
+      "contentTreeField": "tab-name",
+      "fields": [
+        {
+          "component": "text",
+          "name": "tab-name",
+          "label": "Tab Name",
+          "description": "Enter the name of the tab",
+          "valueType": "string",
+          "required": true
+        },
+        {
+          "component": "text",
+          "name": "tab-id",
+          "label": "TAB ID URL",
+          "description": "Enter the unique tab ID which needs to be displayed in the URL",
+          "valueType": "string",
+          "required": true
+        },
+        {
+          "component": "checkbox-group",
+          "name": "back-to-tab",
+          "label": "",
+          "valueType": "string",
+          "options": [{ "name": "Back to Tabs", "value": "show-back-to-tabs" }]
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "tab-section",
+      "components": [
+        "text",
+        "image",
+        "button",
+        "title",
+        "hero",
+        "cards",
+        "columns",
+        "fragment"
+      ]
+    }
+  ]
+}

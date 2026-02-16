@@ -1,9 +1,11 @@
 /* header and nav layout */
 header .nav-wrapper {
   background-color: var(--background-color);
+  border-bottom: 1px solid #ccc;
   width: 100%;
   z-index: 2;
-  position: fixed;
+  position: sticky;
+  top: 0;
 }
 
 header nav {
