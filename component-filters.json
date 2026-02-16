@@ -17,7 +17,8 @@
       "cards",
       "columns",
       "fragment",
-      "global-alert"
+      "global-alert",
+      "tabs-fragment"
     ]
   },
   {
@@ -39,6 +40,12 @@
       "image",
       "button",
       "title"
+    ]
+  },
+  {
+    "id": "tabs-fragment",
+    "components": [
+      "tab-item"
     ]
   },
   {
